@@ -1,0 +1,94 @@
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+[app:main]
+
+use = egg:project_name
+
+pyramid.reload_templates = true
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+pyramid.default_locale_name = en
+pyramid.includes =
+    pyramid_debugtoolbar
+    pyramid_tm
+
+
+###Custom config
+auth.secret = authentication key
+siteName = siteName here
+data_schema = [DBName.dbo]
+
+###DB config
+cn.dialect = mssql+pyodbc:///?odbc_connect=
+
+### other ex:  sqlalchemy.url = mssql+pyodbc://username:password@host\instance/initialDB
+
+#sqlalchemy.url = DRIVER={SQL Server};Server=.;Database=DBName;UID=User;PWD=pwd;
+
+sqlalchemy.implicit_returning = False
+sqlalchemy.pool_reset_on_return = commit
+sqlalchemy.pool_size = 30
+sqlalchemy.pool_timeout = 5
+sqlalchemy.max_overflow = 10
+sqlalchemy.case_sensitive= False
+
+
+
+# By default, the toolbar only appears for clients from IP addresses
+# '127.0.0.1' and '::1'.
+# debugtoolbar.hosts = 127.0.0.1 ::1
+
+
+
+###
+# wsgi server configuration
+###
+
+[server:main]
+use = egg:waitress#main
+host = 127.0.0.1
+port = 6544
+
+###
+# logging configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+###
+
+[loggers]
+keys = root, project_name, sqlalchemy
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+
+[logger_project_name]
+level = DEBUG
+handlers =
+qualname = app
+
+[logger_sqlalchemy]
+level = INFO
+handlers =
+qualname = sqlalchemy.engine
+# "level = INFO" logs SQL queries.
+# "level = DEBUG" logs SQL queries and results.
+# "level = WARN" logs neither.  (Recommended for production systems.)
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s
